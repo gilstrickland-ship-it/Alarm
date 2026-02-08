@@ -110,7 +110,7 @@ export function CreateAlarmScreen({ navigation }) {
             key={c.id}
             onPress={() => setChildId(c.id)}
             className={`px-4 py-2 rounded-xl border-2 ${
-              childId === c.id ? "border-primary bg-primary/10" : "border-gray-200"
+              childId === c.id ? "border-accent bg-accent/10" : "border-gray-200"
             }`}
           >
             <Text className="font-medium">{c.name}</Text>
@@ -156,7 +156,7 @@ export function CreateAlarmScreen({ navigation }) {
         <TouchableOpacity
           onPress={() => setIsMandatory(false)}
           className={`flex-1 py-3 rounded-xl border-2 ${
-            !isMandatory ? "border-primary bg-primary/10" : "border-gray-200"
+            !isMandatory ? "border-accent bg-accent/10" : "border-gray-200"
           }`}
         >
           <Text className="text-center font-medium">Optional</Text>
@@ -164,7 +164,7 @@ export function CreateAlarmScreen({ navigation }) {
         <TouchableOpacity
           onPress={() => setIsMandatory(true)}
           className={`flex-1 py-3 rounded-xl border-2 ${
-            isMandatory ? "border-primary bg-primary/10" : "border-gray-200"
+            isMandatory ? "border-accent bg-accent/10" : "border-gray-200"
           }`}
         >
           <Text className="text-center font-medium">Mandatory</Text>
@@ -178,7 +178,7 @@ export function CreateAlarmScreen({ navigation }) {
             key={d}
             onPress={() => toggleDay(i)}
             className={`w-12 h-12 rounded-xl border-2 items-center justify-center ${
-              repeatDays.includes(i) ? "border-primary bg-primary/10" : "border-gray-200"
+              repeatDays.includes(i) ? "border-accent bg-accent/10" : "border-gray-200"
             }`}
           >
             <Text className="font-medium text-sm">{d}</Text>
@@ -193,7 +193,7 @@ export function CreateAlarmScreen({ navigation }) {
             key={s}
             onPress={() => setSound(s)}
             className={`px-4 py-2 rounded-xl border-2 ${
-              sound === s ? "border-primary bg-primary/10" : "border-gray-200"
+              sound === s ? "border-accent bg-accent/10" : "border-gray-200"
             }`}
           >
             <Text className="font-medium capitalize">{s}</Text>

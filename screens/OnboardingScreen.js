@@ -64,7 +64,7 @@ export function OnboardingScreen({ navigation }) {
               <TouchableOpacity
                 onPress={() => setRole("parent")}
                 className={`flex-1 py-4 rounded-2xl border-2 ${
-                  role === "parent" ? "border-primary bg-primary/10" : "border-gray-200"
+                  role === "parent" ? "border-accent bg-accent/10" : "border-gray-200"
                 }`}
               >
                 <Text className="text-center text-lg font-semibold">
@@ -74,7 +74,7 @@ export function OnboardingScreen({ navigation }) {
               <TouchableOpacity
                 onPress={() => setRole("child")}
                 className={`flex-1 py-4 rounded-2xl border-2 ${
-                  role === "child" ? "border-primary bg-primary/10" : "border-gray-200"
+                  role === "child" ? "border-accent bg-accent/10" : "border-gray-200"
                 }`}
               >
                 <Text className="text-center text-lg font-semibold">

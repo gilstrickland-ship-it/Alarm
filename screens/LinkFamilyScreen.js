@@ -110,7 +110,7 @@ export function LinkFamilyScreen({ navigation }) {
         />
           {myCode && (
             <TouchableOpacity onPress={shareCode} className="mt-3">
-              <Text className="text-primary text-center font-medium">Share code</Text>
+              <Text className="text-accent text-center font-medium">Share code</Text>
             </TouchableOpacity>
           )}
         </Card>

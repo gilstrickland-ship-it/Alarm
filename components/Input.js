@@ -28,7 +28,7 @@ export function Input({
         autoCorrect={false}
         className={`border-2 rounded-xl px-4 py-3 text-base ${
           error ? "border-danger" : "border-gray-200"
-        } focus:border-primary`}
+        } focus:border-gray-400`}
       />
       {error && <Text className="text-danger text-sm mt-1">{error}</Text>}
     </View>

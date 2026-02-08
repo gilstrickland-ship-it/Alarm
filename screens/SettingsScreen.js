@@ -72,7 +72,7 @@ export function SettingsScreen({ navigation }) {
                 value={switchValue}
                 onValueChange={handleDemoSwitch}
                 disabled={switching}
-                trackColor={{ false: "#E5E7EB", true: "#6366F1" }}
+                trackColor={{ false: "#E5E7EB", true: "#2C2C2E" }}
                 thumbColor="#fff"
               />
             </View>

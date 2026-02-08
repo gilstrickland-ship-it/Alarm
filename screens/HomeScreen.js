@@ -129,7 +129,7 @@ export function HomeScreen({ navigation }) {
                 <Text className="text-sm text-gray-400">
                   {alarm.is_mandatory ? "Mandatory" : "Optional"}
                 </Text>
-                <Text className="text-primary font-medium">→</Text>
+                <Text className="text-gray-700 font-medium">→</Text>
               </View>
             </Card>
           ))

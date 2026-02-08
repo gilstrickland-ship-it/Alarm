@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const GRADIENT_COLORS = ["#FFFEF7", "#F5F3FF", "#EDE9FE"];
+const GRADIENT_COLORS = ["#FBF9F4", "#FAF8F6", "#E0ECF8"];
 
 export function GradientBackground({ children, style }) {
   return (

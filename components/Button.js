@@ -14,14 +14,14 @@ export function Button({
     primary: "bg-primary",
     success: "bg-success",
     danger: "bg-danger",
-    outline: "border-2 border-primary bg-transparent",
+    outline: "border-2 border-gray-300 bg-transparent",
   };
 
   const textVariants = {
     primary: "text-white",
     success: "text-white",
     danger: "text-white",
-    outline: "text-primary",
+    outline: "text-gray-800",
   };
 
   return (
@@ -32,7 +32,7 @@ export function Button({
       className={`py-4 px-6 rounded-2xl ${variants[variant]} ${disabled ? "opacity-50" : ""} ${className}`}
     >
       {loading ? (
-        <ActivityIndicator color={variant === "outline" ? "#6366F1" : "#fff"} />
+        <ActivityIndicator color={variant === "outline" ? "#1A1A1A" : "#fff"} />
       ) : (
         <Text
           className={`text-center font-bold text-lg ${textVariants[variant]} ${textClassName}`}

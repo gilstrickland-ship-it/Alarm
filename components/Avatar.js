@@ -33,7 +33,7 @@ export function Avatar({ name, avatarUrl, size = 48, badge, badgeColor }) {
         <View
           className="absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full items-center justify-center px-1"
           style={{
-            backgroundColor: badgeColor || "#EF4444",
+            backgroundColor: badgeColor || "#E57373",
           }}
         >
           <Text className="text-white text-xs font-bold">{badge}</Text>

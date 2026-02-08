@@ -27,7 +27,7 @@ export function ScreenHeader({
             avatarUrl={user.avatar_url}
             size={40}
             badge={notificationCount > 0 ? notificationCount : undefined}
-            badgeColor="#EF4444"
+            badgeColor="#E57373"
           />
         )}
       </View>

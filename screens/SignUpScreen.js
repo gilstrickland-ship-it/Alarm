@@ -129,7 +129,7 @@ export function SignUpScreen({ navigation }) {
               onPress={() => navigation.navigate("Login")}
               className="mt-6"
             >
-              <Text className="text-center text-primary font-medium">
+              <Text className="text-center text-accent font-medium">
                 Already have an account? Sign in
               </Text>
             </TouchableOpacity>

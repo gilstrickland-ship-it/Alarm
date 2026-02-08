@@ -17,13 +17,13 @@ export function Card({ children, onPress, className = "" }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
+    backgroundColor: "#FDFDFD",
+    borderRadius: 20,
     padding: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
     elevation: 3,
   },
 });
