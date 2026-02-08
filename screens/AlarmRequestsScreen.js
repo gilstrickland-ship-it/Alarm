@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
+import { scheduleAlarmNotification, cancelAlarmNotification } from "../lib/alarmNotifications";
 import { GradientBackground } from "../components/GradientBackground";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
@@ -51,13 +52,22 @@ export function AlarmRequestsScreen({ navigation }) {
     setRefreshing(false);
   };
 
-  const respond = async (alarmId, approved) => {
+  const respond = async (alarmId, approved, alarm) => {
     if (!user?.id) return;
     await supabase
       .from("alarms")
       .update({ status: approved ? "approved" : "declined" })
       .eq("id", alarmId)
       .eq("child_id", user.id);
+    if (approved) {
+      scheduleAlarmNotification({ ...alarm, status: "approved" }).catch((e) =>
+        console.warn("Schedule alarm notification:", e?.message)
+      );
+    } else {
+      cancelAlarmNotification(alarmId).catch((e) =>
+        console.warn("Cancel alarm notification:", e?.message)
+      );
+    }
     await fetchRequests();
   };
 
@@ -103,13 +113,13 @@ export function AlarmRequestsScreen({ navigation }) {
                 <Button
                   title="Approve"
                   variant="success"
-                  onPress={() => respond(req.id, true)}
+                  onPress={() => respond(req.id, true, req)}
                   className="flex-1"
                 />
                 <Button
                   title="Decline"
                   variant="danger"
-                  onPress={() => respond(req.id, false)}
+                  onPress={() => respond(req.id, false, req)}
                   className="flex-1"
                 />
               </View>

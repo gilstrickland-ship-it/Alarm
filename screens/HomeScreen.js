@@ -9,6 +9,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useLinking } from "../context/LinkingContext";
 import { supabase } from "../lib/supabase";
+import { syncAlarmNotifications } from "../lib/alarmNotifications";
 import { GradientBackground } from "../components/GradientBackground";
 import { Card } from "../components/Card";
 import { Avatar } from "../components/Avatar";
@@ -35,7 +36,13 @@ export function HomeScreen({ navigation }) {
       .select("*")
       .order("alarm_time", { ascending: true })
       .limit(20);
-    setAlarms(data ?? []);
+    const list = data ?? [];
+    setAlarms(list);
+    if (user?.id) {
+      syncAlarmNotifications(list, user.id).catch((e) =>
+        console.warn("Sync alarm notifications:", e?.message)
+      );
+    }
   };
 
   useEffect(() => {

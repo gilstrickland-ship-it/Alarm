@@ -1,6 +1,7 @@
 import "./global.css";
 import React, { useEffect } from "react";
 import * as Linking from "expo-linking";
+import * as Notifications from "expo-notifications";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -12,6 +13,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { DemoProvider } from "./context/DemoContext";
 import { LinkingProvider } from "./context/LinkingContext";
 import { createSessionFromUrl } from "./lib/auth-oauth";
+import { setupAlarmNotifications } from "./lib/alarmNotifications";
 
 import { LoginScreen } from "./screens/LoginScreen";
 import { SignUpScreen } from "./screens/SignUpScreen";
@@ -119,11 +121,30 @@ function AppNavigator() {
   );
 }
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
+function NotificationSetup() {
+  useEffect(() => {
+    setupAlarmNotifications().catch((err) =>
+      console.warn("Alarm notification setup:", err?.message)
+    );
+  }, []);
+  return null;
+}
+
 export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
         <DemoProvider>
+          <NotificationSetup />
           <OAuthRedirectHandler />
           <LinkingProvider>
             <NavigationContainer>
