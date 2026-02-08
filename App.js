@@ -126,10 +126,10 @@ export default function App() {
         <DemoProvider>
           <OAuthRedirectHandler />
           <LinkingProvider>
-          <NavigationContainer>
-            <AppNavigator />
-            <StatusBar style="dark" />
-          </NavigationContainer>
+            <NavigationContainer>
+              <AppNavigator />
+              <StatusBar style="dark" />
+            </NavigationContainer>
           </LinkingProvider>
         </DemoProvider>
       </AuthProvider>

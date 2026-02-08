@@ -10,11 +10,15 @@ export function NotificationsScreen({ navigation }) {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
+    if (!user?.id) {
+      setNotifications([]);
+      return;
+    }
     const fetch = async () => {
       const { data } = await supabase
         .from("notifications")
         .select("*")
-        .eq("user_id", user?.id)
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(50);
       setNotifications(data ?? []);
