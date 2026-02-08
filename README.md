@@ -74,6 +74,23 @@ npm run web      # Web browser
 
 Start the dev server with `npm start`, then press `i` for iOS or `a` for Android.
 
+## Demo mode
+
+For demos without OAuth setup, use fake parent/child accounts with pre-seeded data.
+
+1. Add to `.env` (from Supabase Dashboard → Project Settings):
+   - **API** → service_role key → `SUPABASE_SERVICE_ROLE_KEY=...`
+   - **Database** → Connection string (URI) → `DATABASE_URL=...`
+
+2. Run the setup script:
+   ```bash
+   npm run setup:demo
+   ```
+
+3. Set `EXPO_PUBLIC_DEMO_MODE=true` in `.env`.
+
+4. Sign in with Apple or Google (uses demo parent). In **Settings**, use the **Demo mode** switch to toggle parent/child view.
+
 ## Scripts
 
 | Command        | Description              |

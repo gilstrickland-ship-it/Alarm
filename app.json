@@ -3,6 +3,7 @@
     "name": "Alarm",
     "slug": "Alarm",
     "version": "1.0.0",
+    "scheme": "com.familyalarms",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -27,7 +28,8 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-web-browser"
     ]
   }
 }
