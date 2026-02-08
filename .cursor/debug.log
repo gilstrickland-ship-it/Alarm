@@ -1,0 +1,9 @@
+{"location":"AuthContext.js:getSession","message":"getSession callback","data":{"hasSession":false},"timestamp":1770586090367,"hypothesisId":"H2"}
+{"location":"AuthContext.js:needsOnboarding","message":"auth state","data":{"hasUser":true,"hasProfile":false,"needsOnboarding":null},"timestamp":1770586255733,"hypothesisId":"H4"}
+{"location":"App.js:MainTabs","message":"MainTabs render","data":{"isParent":false},"timestamp":1770586255738,"hypothesisId":"H1"}
+{"location":"LinkingContext.js:fetchLinks","message":"fetchLinks entry","data":{"userId":"5c7236bd-12a3-4444-9ede-2e4c2f4a57d9","branch":"child"},"timestamp":1770586255782,"hypothesisId":"H3"}
+{"location":"AuthContext.js:fetchProfile","message":"fetchProfile result","data":{"userId":"5c7236bd-12a3-4444-9ede-2e4c2f4a57d9","hasData":true,"hasError":false,"profileName":"Gil Strickland"},"timestamp":1770586256186,"hypothesisId":"H2"}
+{"location":"HomeScreen.js:fetchAlarms","message":"fetchAlarms result","data":{"count":0,"hasError":false},"timestamp":1770586256186,"hypothesisId":"H5"}
+{"location":"AuthContext.js:needsOnboarding","message":"auth state","data":{"hasUser":true,"hasProfile":true,"profileName":"Gil Strickland","needsOnboarding":false},"timestamp":1770586256186,"hypothesisId":"H4"}
+{"location":"App.js:MainTabs","message":"MainTabs render","data":{"isParent":false},"timestamp":1770586256189,"hypothesisId":"H1"}
+{"location":"LinkingContext.js:fetchLinks","message":"fetchLinks entry","data":{"userId":"5c7236bd-12a3-4444-9ede-2e4c2f4a57d9","profileRole":"child","branch":"child"},"timestamp":1770586256199,"hypothesisId":"H3"}
