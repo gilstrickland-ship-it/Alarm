@@ -7,6 +7,7 @@
  */
 require("dotenv").config();
 const { createClient } = require("@supabase/supabase-js");
+const { Client } = require("pg");
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -39,6 +40,26 @@ async function createDemoUsers(supabase) {
       }
       console.log(`  ✓ Created ${email}`);
     }
+  }
+}
+
+async function ensureOnboardingColumn() {
+  if (!DATABASE_URL || DATABASE_URL.includes("[YOUR-PASSWORD]")) {
+    console.log("\n  ⚠ Skipping schema migration (DATABASE_URL not set).");
+    console.log("  If you see 'onboarding_completed' errors, run in Supabase SQL Editor:");
+    console.log("  ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT false;\n");
+    return;
+  }
+  const client = new Client({ connectionString: DATABASE_URL });
+  try {
+    await client.connect();
+    await client.query("ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT false");
+    console.log("  ✓ Schema updated (onboarding_completed)");
+  } catch (err) {
+    console.warn("  ⚠ Schema migration failed:", err.message);
+    console.log("  Run manually in SQL Editor: ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT false;\n");
+  } finally {
+    await client.end();
   }
 }
 
@@ -104,7 +125,10 @@ Add to .env:
   console.log("1. Creating demo auth users...");
   await createDemoUsers(supabase);
 
-  console.log("\n2. Seeding demo data (via API)...");
+  console.log("\n2. Ensuring schema (onboarding_completed column)...");
+  await ensureOnboardingColumn();
+
+  console.log("\n3. Seeding demo data (via API)...");
   await seedDemoDataViaApi(supabase);
 
   console.log("\n✅ Demo setup complete.\n");
