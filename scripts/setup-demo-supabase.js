@@ -54,10 +54,12 @@ async function ensureOnboardingColumn() {
   try {
     await client.connect();
     await client.query("ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT false");
+    await client.query("UPDATE profiles SET onboarding_completed = true");
     console.log("  ✓ Schema updated (onboarding_completed)");
   } catch (err) {
-    console.warn("  ⚠ Schema migration failed:", err.message);
-    console.log("  Run manually in SQL Editor: ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT false;\n");
+    console.error("  ✗ Schema migration failed:", err.message);
+    console.log("  Run manually in SQL Editor: ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT false; UPDATE profiles SET onboarding_completed = true;\n");
+    process.exit(1);
   } finally {
     await client.end();
   }

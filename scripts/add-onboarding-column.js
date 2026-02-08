@@ -18,7 +18,7 @@ Run this SQL in Supabase SQL Editor:
 https://supabase.com/dashboard/project/xkiiytisidmtpmghnakz/sql/new
 
   ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT false;
-  UPDATE profiles SET onboarding_completed = true WHERE onboarding_completed IS NULL;
+  UPDATE profiles SET onboarding_completed = true;
 `);
     process.exit(1);
   }
@@ -27,7 +27,7 @@ https://supabase.com/dashboard/project/xkiiytisidmtpmghnakz/sql/new
   try {
     await client.connect();
     await client.query("ALTER TABLE profiles ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT false");
-    await client.query("UPDATE profiles SET onboarding_completed = true WHERE onboarding_completed IS NULL");
+    await client.query("UPDATE profiles SET onboarding_completed = true");
     console.log("✅ onboarding_completed column added/updated");
   } catch (err) {
     console.error("❌ Failed:", err.message);
