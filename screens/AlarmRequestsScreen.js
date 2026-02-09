@@ -9,6 +9,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
 import { scheduleAlarmNotification, cancelAlarmNotification } from "../lib/alarmNotifications";
+import { showError } from "../lib/toast";
 import { GradientBackground } from "../components/GradientBackground";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
@@ -54,11 +55,15 @@ export function AlarmRequestsScreen({ navigation }) {
 
   const respond = async (alarmId, approved, alarm) => {
     if (!user?.id) return;
-    await supabase
+    const { error } = await supabase
       .from("alarms")
       .update({ status: approved ? "approved" : "declined" })
       .eq("id", alarmId)
       .eq("child_id", user.id);
+    if (error) {
+      showError(error.message);
+      return;
+    }
     if (approved) {
       scheduleAlarmNotification({ ...alarm, status: "approved" }).catch((e) =>
         console.warn("Schedule alarm notification:", e?.message)
