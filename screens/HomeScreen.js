@@ -16,6 +16,9 @@ import { Avatar } from "../components/Avatar";
 import { StatusTag } from "../components/StatusTag";
 import { FAB } from "../components/FAB";
 import { ScreenHeader } from "../components/ScreenHeader";
+import { AlarmDetailDrawer } from "../components/AlarmDetailDrawer";
+import { Button } from "../components/Button";
+import { showError, showConfirmation } from "../lib/toast";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -29,6 +32,9 @@ export function HomeScreen({ navigation }) {
   const { linkedChildren, linkedParents, loading, refetch } = useLinking();
   const [alarms, setAlarms] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [drawerAlarm, setDrawerAlarm] = useState(null);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(new Set());
 
   const fetchAlarms = async () => {
     const { data } = await supabase
@@ -59,18 +65,93 @@ export function HomeScreen({ navigation }) {
 
   const isParent = profile?.role === "parent";
 
+  const getChildName = (childId) =>
+    linkedChildren.find((c) => c.id === childId)?.name || "Child";
+
+  const toggleSelect = (alarmId) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(alarmId)) next.delete(alarmId);
+      else next.add(alarmId);
+      return next;
+    });
+  };
+
+  const handleAlarmPress = (alarm) => {
+    if (isParent) {
+      if (selectionMode) {
+        toggleSelect(alarm.id);
+      } else {
+        setDrawerAlarm(alarm);
+      }
+    }
+  };
+
+  const handleDeleteAlarm = async (alarmId) => {
+    const { error } = await supabase
+      .from("alarms")
+      .delete()
+      .eq("id", alarmId)
+      .eq("parent_id", user.id);
+    if (error) showError(error.message);
+    else await fetchAlarms();
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedIds.size === 0) return;
+    showConfirmation(
+      `Delete ${selectedIds.size} alarm${selectedIds.size > 1 ? "s" : ""}?`,
+      {
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        destructive: true,
+        onConfirm: async () => {
+          for (const id of selectedIds) {
+            await supabase
+              .from("alarms")
+              .delete()
+              .eq("id", id)
+              .eq("parent_id", user.id);
+          }
+          setSelectedIds(new Set());
+          setSelectionMode(false);
+          await fetchAlarms();
+        },
+      }
+    );
+  };
+
+  const exitSelectionMode = () => {
+    setSelectionMode(false);
+    setSelectedIds(new Set());
+  };
+
   return (
     <GradientBackground>
       <ScreenHeader
         title="Family Alarms"
         user={profile}
         rightIcons={
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Notifications")}
-            className="p-2"
-          >
-            <Text className="text-xl">🔔</Text>
-          </TouchableOpacity>
+          <View className="flex-row items-center">
+            {isParent && alarms.length > 0 && (
+              <TouchableOpacity
+                onPress={() =>
+                  selectionMode ? exitSelectionMode() : setSelectionMode(true)
+                }
+                className="p-2"
+              >
+                <Text className="text-base font-medium text-gray-700">
+                  {selectionMode ? "Cancel" : "Select"}
+                </Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Notifications")}
+              className="p-2"
+            >
+              <Text className="text-xl">🔔</Text>
+            </TouchableOpacity>
+          </View>
         }
       />
 
@@ -122,30 +203,71 @@ export function HomeScreen({ navigation }) {
           </Card>
         ) : (
           alarms.map((alarm) => (
-            <Card key={alarm.id} className="mb-3">
-              <View className="flex-row items-start justify-between mb-2">
-                <Text className="font-bold text-lg text-gray-800">
-                  {alarm.label || "Alarm"}
+            <TouchableOpacity
+              key={alarm.id}
+              onPress={() => handleAlarmPress(alarm)}
+              activeOpacity={0.8}
+            >
+              <Card
+                className={`mb-3 ${selectionMode && selectedIds.has(alarm.id) ? "border-2 border-accent bg-accent/5" : ""}`}
+              >
+                <View className="flex-row items-start justify-between mb-2">
+                  <View className="flex-row items-center flex-1">
+                    {isParent && selectionMode && (
+                      <View className="w-6 h-6 rounded-full border-2 mr-3 items-center justify-center border-gray-300">
+                        {selectedIds.has(alarm.id) && (
+                          <View className="w-3 h-3 rounded-full bg-accent" />
+                        )}
+                      </View>
+                    )}
+                    <View className="flex-1">
+                      <Text className="font-bold text-lg text-gray-800">
+                        {alarm.label || "Alarm"}
+                      </Text>
+                    </View>
+                  </View>
+                  <StatusTag status={alarm.status} />
+                </View>
+                <Text className="text-gray-500 mb-2">
+                  {new Date(alarm.alarm_time).toLocaleString()}
                 </Text>
-                <StatusTag status={alarm.status} />
-              </View>
-              <Text className="text-gray-500 mb-2">
-                {new Date(alarm.alarm_time).toLocaleString()}
-              </Text>
-              <View className="flex-row items-center justify-between">
-                <Text className="text-sm text-gray-400">
-                  {alarm.is_mandatory ? "Mandatory" : "Optional"}
-                </Text>
-                <Text className="text-gray-700 font-medium">→</Text>
-              </View>
-            </Card>
+                <View className="flex-row items-center justify-between">
+                  <Text className="text-sm text-gray-400">
+                    {alarm.is_mandatory ? "Mandatory" : "Optional"}
+                    {isParent && (
+                      <Text className="text-gray-400"> • {getChildName(alarm.child_id)}</Text>
+                    )}
+                  </Text>
+                  {!selectionMode && isParent && (
+                    <Text className="text-gray-700 font-medium">→</Text>
+                  )}
+                </View>
+              </Card>
+            </TouchableOpacity>
           ))
         )}
       </ScrollView>
 
-      {isParent && (
+      {isParent && selectionMode && selectedIds.size > 0 && (
+        <View className="absolute bottom-24 left-4 right-4">
+          <Button
+            title={`Delete selected (${selectedIds.size})`}
+            variant="danger"
+            onPress={handleDeleteSelected}
+          />
+        </View>
+      )}
+      {isParent && !selectionMode && (
         <FAB onPress={() => navigation.navigate("CreateAlarm")} />
       )}
+      <AlarmDetailDrawer
+        visible={!!drawerAlarm}
+        alarm={drawerAlarm}
+        childName={drawerAlarm ? getChildName(drawerAlarm.child_id) : null}
+        onClose={() => setDrawerAlarm(null)}
+        onEdit={(alarm) => navigation.navigate("EditAlarm", { alarm })}
+        onDelete={handleDeleteAlarm}
+      />
     </GradientBackground>
   );
 }

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Switch, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Switch } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { useDemo } from "../context/DemoContext";
 import { DEMO_MODE } from "../lib/auth-oauth";
 import { GradientBackground } from "../components/GradientBackground";
 import { Card } from "../components/Card";
 import { Avatar } from "../components/Avatar";
+import { showError } from "../lib/toast";
 
 export function SettingsScreen({ navigation }) {
   const { profile, signOut } = useAuth();
@@ -25,7 +26,7 @@ export function SettingsScreen({ navigation }) {
     const { error } = await switchUser(currentRole);
     if (error) {
       setSwitchValue(!value);
-      Alert.alert("Error", error.message ?? "Failed to switch user");
+      showError(error.message ?? "Failed to switch user");
     }
   };
 

@@ -2,7 +2,8 @@ import "./global.css";
 import React, { useEffect } from "react";
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
-import { NavigationContainer } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+import { NavigationContainer, createNavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -20,13 +21,23 @@ import { SignUpScreen } from "./screens/SignUpScreen";
 import { OnboardingScreen } from "./screens/OnboardingScreen";
 import { HomeScreen } from "./screens/HomeScreen";
 import { CreateAlarmScreen } from "./screens/CreateAlarmScreen";
+import { EditAlarmScreen } from "./screens/EditAlarmScreen";
 import { LinkFamilyScreen } from "./screens/LinkFamilyScreen";
 import { AlarmRequestsScreen } from "./screens/AlarmRequestsScreen";
+import { AlarmRingingScreen } from "./screens/AlarmRingingScreen";
 import { NotificationsScreen } from "./screens/NotificationsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
+import { ConfirmationToast } from "./components/ConfirmationToast";
+
+const toastConfig = {
+  confirmation: ({ text1, hide, props }) => (
+    <ConfirmationToast text1={text1} hide={hide} props={props} />
+  ),
+};
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const navigationRef = createNavigationContainerRef();
 
 function MainTabs() {
   const { profile } = useAuth();
@@ -115,8 +126,10 @@ function AppNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Main" component={MainTabs} />
       <Stack.Screen name="CreateAlarm" component={CreateAlarmScreen} />
+      <Stack.Screen name="EditAlarm" component={EditAlarmScreen} />
       <Stack.Screen name="LinkFamily" component={LinkFamilyScreen} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="AlarmRinging" component={AlarmRingingScreen} />
     </Stack.Navigator>
   );
 }
@@ -135,6 +148,29 @@ function NotificationSetup() {
     setupAlarmNotifications().catch((err) =>
       console.warn("Alarm notification setup:", err?.message)
     );
+
+    const navigateToAlarm = (alarmId) => {
+      if (alarmId && navigationRef.isReady()) {
+        navigationRef.navigate("AlarmRinging", { alarmId });
+      }
+    };
+
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (response) {
+        const alarmId = response.notification.request.content.data?.alarmId;
+        if (alarmId) {
+          setTimeout(() => navigateToAlarm(alarmId), 500);
+        }
+      }
+    });
+
+    const sub = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const alarmId = response.notification.request.content.data?.alarmId;
+        navigateToAlarm(alarmId);
+      }
+    );
+    return () => sub.remove();
   }, []);
   return null;
 }
@@ -147,8 +183,9 @@ export default function App() {
           <NotificationSetup />
           <OAuthRedirectHandler />
           <LinkingProvider>
-            <NavigationContainer>
+            <NavigationContainer ref={navigationRef}>
               <AppNavigator />
+              <Toast config={toastConfig} />
               <StatusBar style="dark" />
             </NavigationContainer>
           </LinkingProvider>

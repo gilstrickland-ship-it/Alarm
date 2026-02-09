@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Alert,
   Share,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
@@ -14,6 +13,7 @@ import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import { GradientBackground } from "../components/GradientBackground";
 import { Card } from "../components/Card";
+import { showError, showSuccess, showInfo } from "../lib/toast";
 
 function generateCode() {
   return Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -41,7 +41,7 @@ export function LinkFamilyScreen({ navigation }) {
     });
     setCreating(false);
     if (error) {
-      Alert.alert("Error", error.message);
+      showError(error.message);
       return;
     }
     setMyCode(code);
@@ -58,11 +58,11 @@ export function LinkFamilyScreen({ navigation }) {
       .single();
     setLoading(false);
     if (inviteErr || !invite) {
-      Alert.alert("Invalid Code", "This invite code is invalid or expired.");
+      showError("This invite code is invalid or expired.", "Invalid Code");
       return;
     }
     if (invite.inviter_id === user.id) {
-      Alert.alert("Oops", "You can't join your own invite.");
+      showInfo("You can't join your own invite.", "Oops");
       return;
     }
     const parentId = invite.inviter_role === "parent" ? invite.inviter_id : user.id;
@@ -72,12 +72,12 @@ export function LinkFamilyScreen({ navigation }) {
       child_id: childId,
     });
     if (error) {
-      Alert.alert("Error", error.message);
+      showError(error.message);
       return;
     }
     await refetch();
     setJoinCode("");
-    Alert.alert("Success", "You're now linked!");
+    showSuccess("You're now linked!", "Success");
   };
 
   const shareCode = () => {
