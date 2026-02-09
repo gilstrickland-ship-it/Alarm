@@ -133,18 +133,6 @@ export function HomeScreen({ navigation }) {
         user={profile}
         rightIcons={
           <View className="flex-row items-center">
-            {isParent && alarms.length > 0 && (
-              <TouchableOpacity
-                onPress={() =>
-                  selectionMode ? exitSelectionMode() : setSelectionMode(true)
-                }
-                className="p-2"
-              >
-                <Text className="text-base font-medium text-gray-700">
-                  {selectionMode ? "Cancel" : "Select"}
-                </Text>
-              </TouchableOpacity>
-            )}
             <TouchableOpacity
               onPress={() => navigation.navigate("Notifications")}
               className="p-2"
@@ -190,9 +178,23 @@ export function HomeScreen({ navigation }) {
           </View>
         )}
 
-        <Text className="text-gray-600 font-semibold mb-3">
-          {isParent ? "Recent alarms" : "Upcoming alarms"}
-        </Text>
+        <View className="flex-row items-center justify-between mb-3">
+          <Text className="text-gray-600 font-semibold">
+            {isParent ? "Recent alarms" : "Upcoming alarms"}
+          </Text>
+          {isParent && alarms.length > 0 && (
+            <TouchableOpacity
+              onPress={() =>
+                selectionMode ? exitSelectionMode() : setSelectionMode(true)
+              }
+              className="p-1"
+            >
+              <Text className="text-base font-medium text-gray-700">
+                {selectionMode ? "Cancel" : "Select"}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
         {alarms.length === 0 ? (
           <Card>
